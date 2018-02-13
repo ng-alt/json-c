@@ -4,6 +4,7 @@ AC_PREREQ(2.52)
 AC_INIT([json-c], 0.12.1, [json-c@googlegroups.com])
 
 AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE
 
 AC_PROG_MAKE_SET
 

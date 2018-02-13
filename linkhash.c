@@ -405,7 +405,7 @@ unsigned long lh_char_hash(const void *k)
 		int seed;
 		/* we can't use -1 as it is the unitialized sentinel */
 		while ((seed = json_c_get_random_seed()) == -1);
-#if defined __GNUC__
+#if defined __GNUC__ && defined __GCC_HAVE_SYNC_COMPARE_AND_SWAP_4
 		__sync_val_compare_and_swap(&random_seed, -1, seed);
 #elif defined _MSC_VER
 		InterlockedCompareExchange(&random_seed, seed, -1);
@@ -482,6 +482,10 @@ void lh_table_free(struct lh_table *t)
 	struct lh_entry *c;
 	for(c = t->head; c != NULL; c = c->next) {
 		if(t->free_fn) {
+			if(c->k == LH_FREED || c->k == LH_EMPTY) {
+				printf("\ndouble free ?!\n");
+				continue;
+			}
 			t->free_fn(c);
 		}
 	}
